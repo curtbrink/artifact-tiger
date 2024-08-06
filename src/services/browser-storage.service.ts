@@ -1,6 +1,6 @@
 const COOKIE_NAMES = {
-  Auth: 'tradeTigerAuthToken',
-  SelectedShip: 'tradeTigerShipId',
+  Auth: 'artifactTigerAuthToken',
+  SelectedCharacter: 'artifactTigerSelectedCharacter',
 };
 
 export default {
@@ -18,17 +18,17 @@ export default {
     localStorage.removeItem(COOKIE_NAMES.Auth);
   },
 
-  // Persisting selected ship
-  setSelectedShip(shipId: string) {
-    return localStorage.setItem(COOKIE_NAMES.SelectedShip, shipId);
+  // Persisting selected character
+  setSelectedCharacter(characterName: string) {
+    return localStorage.setItem(COOKIE_NAMES.SelectedCharacter, characterName);
   },
-  getSelectedShip() {
-    return localStorage.getItem(COOKIE_NAMES.SelectedShip);
+  getSelectedCharacter() {
+    return localStorage.getItem(COOKIE_NAMES.SelectedCharacter);
   },
-  hasSelectedShip() {
-    return !!this.getSelectedShip();
+  hasSelectedCharacter() {
+    return !!this.getSelectedCharacter();
   },
   clearSelectedShip() {
-    localStorage.removeItem(COOKIE_NAMES.SelectedShip);
+    localStorage.removeItem(COOKIE_NAMES.SelectedCharacter);
   },
 };

@@ -1,8 +1,9 @@
 {
-  "name": "trade-tiger",
-  "version": "0.0.0",
+  "name": "artifact-tiger",
+  "version": "0.0.1",
   "scripts": {
     "dev": "vite",
+    "serve": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore"

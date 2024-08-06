@@ -1,9 +1,13 @@
 <template>
   <div>
     <v-text-field
-      v-model="selectedAuthToken"
-      label="Enter auth token"></v-text-field>
-    <v-btn block @click="saveToken">Log In</v-btn>
+      v-model="username"
+      label="Username"></v-text-field>
+    <v-text-field
+      v-model="password"
+      label="Password"
+      type="password"></v-text-field>
+    <v-btn block @click="attemptLogin">Log In</v-btn>
   </div>
 </template>
 
@@ -11,11 +15,14 @@
 import { ref } from 'vue';
 import browserStorageService from '@/services/browser-storage.service';
 import router from '@/router';
+import tokenApi from '@/api/token/token.api';
 
-const selectedAuthToken = ref('');
+const username = ref('');
+const password = ref('');
 
-function saveToken() {
-  browserStorageService.setAuthToken(selectedAuthToken.value);
+async function attemptLogin() {
+  const authResponse = await tokenApi.generateToken({ username: username.value, password: password.value });
+  browserStorageService.setAuthToken(authResponse.token);
   router.push({ path: '/' });
 }
 </script>

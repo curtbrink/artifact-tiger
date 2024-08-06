@@ -2,13 +2,13 @@
   <v-navigation-drawer expand-on-hover rail>
     <v-list density="compact" nav>
       <v-list-item
-        v-for="(item, i) in agentStore.loggedIn ? regularItems : authItems"
+        v-for="(item, i) in browserStorageService.hasAuthToken() ? regularItems : authItems"
         :key="i"
         :to="{ path: item.routePath }"
         :prepend-icon="item.icon"
         :title="item.label"></v-list-item>
       <v-divider />
-      <v-list-item
+      <!-- <v-list-item
         v-if="currentLocationStore.currentSystemSymbol"
         :to="{ path: '/system-map' }"
         prepend-icon="mdi-map"
@@ -27,23 +27,13 @@
         v-if="marketStore.marketAccessible"
         :to="{ path: '/market' }"
         prepend-icon="mdi-currency-usd"
-        title="Market" />
+        title="Market" /> -->
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
-import { useAgentStore } from '@/store/agent';
-import { useShipyardStore } from '@/store/shipyard';
-import { useShipStore } from '@/store/ship';
-import { useMarketStore } from '@/store/market';
-import { useCurrentLocationStore } from '@/store/current-location';
-
-const agentStore = useAgentStore();
-const shipyardStore = useShipyardStore();
-const shipStore = useShipStore();
-const marketStore = useMarketStore();
-const currentLocationStore = useCurrentLocationStore();
+import browserStorageService from '@/services/browser-storage.service';
 
 const authItems = [
   {
@@ -57,31 +47,6 @@ const regularItems = [
     icon: 'mdi-home',
     routePath: '/',
     label: 'Home',
-  },
-  {
-    icon: 'mdi-account',
-    routePath: '/agent',
-    label: 'Agent',
-  },
-  {
-    icon: 'mdi-rocket-launch',
-    routePath: '/ships',
-    label: 'Ships',
-  },
-  {
-    icon: 'mdi-currency-usd',
-    routePath: '/contracts',
-    label: 'Contracts',
-  },
-  {
-    icon: 'mdi-account-multiple',
-    routePath: '/factions',
-    label: 'Factions',
-  },
-  {
-    icon: 'mdi-flare',
-    routePath: '/systems',
-    label: 'Systems',
   },
 ];
 </script>
