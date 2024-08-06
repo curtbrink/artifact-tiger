@@ -1,10 +1,8 @@
 import artifactsApi from '../artifacts.api';
 import { CreateAccountRequest, CreateAccountResponse } from './accounts.models';
 
-const baseUrl = 'accounts';
-
 const accountsApi = {
-  createAccount: () => `${baseUrl}/create`,
+  createAccount: () => `accounts/create`,
 };
 
 export default {

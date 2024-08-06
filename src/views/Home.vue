@@ -13,5 +13,10 @@
 </template>
 
 <script lang="ts" setup>
+import charactersApi from '@/api/characters/characters.api';
+import { onMounted } from 'vue';
 
+onMounted(async () => {
+  await charactersApi.getMyCharacters();
+});
 </script>

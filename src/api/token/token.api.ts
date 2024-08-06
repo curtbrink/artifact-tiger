@@ -5,10 +5,8 @@ import { GenerateTokenRequest, GenerateTokenResponse } from './token.models';
 const encodeAuth = (username: string, password: string): string =>
   btoa(`${username}:${password}`);
 
-const baseUrl = 'token';
-
 const tokenApi = {
-  generateToken: () => `${baseUrl}/`,
+  generateToken: () => `token/`, // trailing slash is intentional; `token` redirects to `token/` so we just save a call
 };
 
 export default {
