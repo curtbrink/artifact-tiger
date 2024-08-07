@@ -46,7 +46,12 @@ const regularItems = [
   {
     icon: 'mdi-home',
     routePath: '/',
-    label: 'Home',
+    label: 'Waiting Room',
   },
+  {
+    icon: 'mdi-account',
+    routePath: '/control',
+    label: 'Character'
+  }
 ];
 </script>

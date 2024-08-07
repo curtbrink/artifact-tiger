@@ -1,9 +1,7 @@
 // Composables
 import browserStorageService from '@/services/browser-storage.service';
-import { useAgentStore } from '@/store/agent';
-import { useContractStore } from '@/store/contract';
-import { useShipStore } from '@/store/ship';
 import AuthView from '@/views/Auth.vue';
+import CharacterControlView from '@/views/CharacterControl.vue';
 import HomeView from '@/views/Home.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -23,6 +21,13 @@ const routes = [
     },
     beforeEnter: () => {
       browserStorageService.clearAuthToken();
+    },
+  },
+  {
+    path: '/control',
+    component: CharacterControlView,
+    meta: {
+      requiresAuth: true,
     },
   },
 ];

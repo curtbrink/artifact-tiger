@@ -104,3 +104,26 @@ export interface Character {
   inventory_max_items: number;
   inventory: InventorySlot[];
 }
+
+export interface MoveCharacterRequest {
+  x: number;
+  y: number;
+}
+
+export interface MoveCharacterResponse {
+  cooldown: any; // todo type
+  destination: any; // todo type
+  character: Character;
+}
+
+export interface FightResponse {
+  cooldown: any; // todo type
+  fight: any; // todo type
+  character: Character;
+}
+
+export interface GatheringResponse {
+  cooldown: any; // todo type
+  details: any; // todo type
+  character: Character;
+}

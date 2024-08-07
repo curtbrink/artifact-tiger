@@ -1,18 +1,27 @@
 <template>
   <v-row align="center" justify="center">
     <v-col cols="2">
-      <v-card>
+      <v-card v-for="character of characterStore.characterList">
+        <v-card-title>
+          {{ character.name }}
+        </v-card-title>
         <v-card-text>
-          This is the home page, you should have an auth token now!<br /><br />
-          You have {{ characterText }}.
+          Select this character to control it.
         </v-card-text>
+        <v-card-actions>
+          <v-btn 
+            block 
+            variant="outlined"
+            @click="selectAndRedirect(character.name)"
+            >Select</v-btn>
+        </v-card-actions>
       </v-card>
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts" setup>
-import charactersApi from '@/api/characters/characters.api';
+import router from '@/router';
 import { useCharacters } from '@/store/characters';
 import { computed, onMounted, ref } from 'vue';
 
@@ -22,7 +31,8 @@ onMounted(async () => {
   await characterStore.fetchAllMyCharacters();
 });
 
-const numCharacters = computed(() => characterStore.characterList.length);
-const multipleChars = computed(() => numCharacters.value !== 1);
-const characterText = computed(() => `${numCharacters.value} character${multipleChars.value ? 's' : ''}`);
+async function selectAndRedirect(name: string) {
+  await characterStore.selectCharacter(name);
+  router.push('/control');
+}
 </script>

@@ -16,6 +16,11 @@ instance.interceptors.response.use(undefined, async (error) => {
   throw error;
 });
 
+instance.interceptors.response.use(async (response) => {
+  console.log(response);
+  return response;
+});
+
 instance.interceptors.request.use(
   async (request) => {
     if (browserStorageService.hasAuthToken()) {
