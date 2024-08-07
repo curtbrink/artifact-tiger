@@ -4,8 +4,7 @@
       <v-card>
         <v-card-text>
           This is the home page, you should have an auth token now!<br /><br />
-          This is your agent symbol: lol not anymore<br /><br />
-          You have 0 total cookies.
+          You have {{ characterText }}.
         </v-card-text>
       </v-card>
     </v-col>
@@ -14,9 +13,16 @@
 
 <script lang="ts" setup>
 import charactersApi from '@/api/characters/characters.api';
-import { onMounted } from 'vue';
+import { useCharacters } from '@/store/characters';
+import { computed, onMounted, ref } from 'vue';
+
+const characterStore = useCharacters();
 
 onMounted(async () => {
-  await charactersApi.getMyCharacters();
+  await characterStore.fetchAllMyCharacters();
 });
+
+const numCharacters = computed(() => characterStore.characterList.length);
+const multipleChars = computed(() => numCharacters.value !== 1);
+const characterText = computed(() => `${numCharacters.value} character${multipleChars.value ? 's' : ''}`);
 </script>

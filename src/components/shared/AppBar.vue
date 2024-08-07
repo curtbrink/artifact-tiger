@@ -5,9 +5,9 @@
       <v-container class="fill-width">
         <v-row>
           <v-col cols="3">
-            <!-- <div v-if="loadingSpinner.isLoading">
+            <div v-if="loadingSpinner.isLoading">
               <v-progress-circular indeterminate :size="25" :width="5" />
-            </div> -->
+            </div>
           </v-col>
           <v-col cols="3">
             <!-- <div v-if="agentStore.loggedIn">
@@ -34,6 +34,9 @@
 </template>
 
 <script setup lang="ts">
+import { useLoadingSpinner } from '@/store/loading-spinner';
+
+const loadingSpinner = useLoadingSpinner();
 </script>
 
 <style>

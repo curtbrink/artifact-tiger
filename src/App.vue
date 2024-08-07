@@ -17,42 +17,42 @@
 import AppBar from '@/components/shared/AppBar.vue';
 import NavDrawer from '@/components/shared/NavDrawer.vue';
 import TradeTigerSnackbar from '@/components/shared/TradeTigerSnackbar.vue';
+import { onBeforeMount } from 'vue';
+import { useLoadingSpinner } from './store/loading-spinner';
+import { useSnackbar } from './store/snackbar';
+import { useCharacters } from './store/characters';
 
-// onBeforeMount(() => {
-//   document.title = 'Artifact Tiger';
+onBeforeMount(() => {
+  document.title = 'Artifact Tiger';
 
-//   const storeLoadingHook = ({
-//     after, // hook after the action returns or resolves
-//     onError, // hook if the action throws or rejects
-//   }: {
-//     after: any;
-//     onError: any;
-//   }) => {
-//     const loadingSpinner = useLoadingSpinner();
-//     loadingSpinner.setLoading();
+  const storeLoadingHook = ({
+    after, // hook after the action returns or resolves
+    onError, // hook if the action throws or rejects
+  }: {
+    after: any;
+    onError: any;
+  }) => {
+    const loadingSpinner = useLoadingSpinner();
+    loadingSpinner.setLoading();
 
-//     after(() => {
-//       loadingSpinner.setLoaded();
-//     });
+    after(() => {
+      loadingSpinner.setLoaded();
+    });
 
-//     onError((e: any) => {
-//       useSnackbar().showError(e);
-//       loadingSpinner.setLoaded();
-//     });
-//   };
+    onError((e: any) => {
+      useSnackbar().showError(e);
+      loadingSpinner.setLoaded();
+    });
+  };
 
-//   const listOfStores = [
-//     useAgentStore(),
-//     useShipStore(),
-//     useContractStore(),
-//     useFactionStore(),
-//     useSystemStore(),
-//     useShipyardStore(),
-//   ];
-//   for (const store of listOfStores) {
-//     store.$onAction(storeLoadingHook);
-//   }
-// });
+  const listOfStores = [
+    useCharacters(),
+  ]
+
+  for (const store of listOfStores) {
+    store.$onAction(storeLoadingHook);
+  }
+});
 </script>
 
 <style>
