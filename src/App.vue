@@ -21,6 +21,7 @@ import { onBeforeMount } from 'vue';
 import { useLoadingSpinner } from './store/loading-spinner';
 import { useSnackbar } from './store/snackbar';
 import { useCharacters } from './store/characters';
+import { useEncyclopedia } from './store/encyclopedia';
 
 onBeforeMount(() => {
   document.title = 'Artifact Tiger';
@@ -45,9 +46,7 @@ onBeforeMount(() => {
     });
   };
 
-  const listOfStores = [
-    useCharacters(),
-  ]
+  const listOfStores = [useEncyclopedia(), useCharacters()];
 
   for (const store of listOfStores) {
     store.$onAction(storeLoadingHook);

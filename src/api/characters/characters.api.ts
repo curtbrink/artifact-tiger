@@ -2,10 +2,12 @@ import artifactsApi from '../artifacts.api';
 import { ResponseData } from '../types';
 import {
   Character,
+  EquipSlot,
   FightResponse,
   GatheringResponse,
   MoveCharacterRequest,
   MoveCharacterResponse,
+  UnequipResponse,
 } from './characters.models';
 
 const charactersApi = {
@@ -13,6 +15,7 @@ const charactersApi = {
   moveCharacter: (name: string) => `my/${name}/action/move`,
   fight: (name: string) => `my/${name}/action/fight`,
   gather: (name: string) => `my/${name}/action/gathering`,
+  unequip: (name: string) => `my/${name}/action/unequip`,
 };
 
 export default {
@@ -37,6 +40,14 @@ export default {
   gather(name: string): Promise<ResponseData<GatheringResponse>> {
     return artifactsApi.action
       .post(charactersApi.gather(name))
+      .then((res) => res.data);
+  },
+  unequip(
+    name: string,
+    slot: EquipSlot,
+  ): Promise<ResponseData<UnequipResponse>> {
+    return artifactsApi.action
+      .post(charactersApi.unequip(name), { slot })
       .then((res) => res.data);
   },
 };

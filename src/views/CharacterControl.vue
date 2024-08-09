@@ -5,10 +5,10 @@
         <v-card-title>
           {{ character.name }}
         </v-card-title>
-        <v-card-text> You're controlling this character :3 </v-card-text>
+        <v-card-text> You're controlling this character! </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="6">
+    <v-col cols="2">
       <v-card>
         <v-card-title>Movement</v-card-title>
         <v-card-text>
@@ -18,12 +18,15 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="4">
+    <v-col cols="2">
       <v-card>
         <v-card-title>Actions</v-card-title>
         <v-card-text>
           <v-btn block variant="outlined" @click="fight">Fight!</v-btn>
           <v-btn block variant="outlined" @click="gather">Gather!</v-btn>
+          <v-btn block variant="outlined" @click="unequipWeapon"
+            >Unequip!</v-btn
+          >
         </v-card-text>
       </v-card>
     </v-col>
@@ -31,6 +34,7 @@
 </template>
 
 <script lang="ts" setup>
+import { EquipSlot } from '@/api/characters/characters.models';
 import { useCharacters } from '@/store/characters';
 import { computed, onMounted, ref } from 'vue';
 
@@ -49,5 +53,8 @@ async function fight() {
 }
 async function gather() {
   await characterStore.gather();
+}
+async function unequipWeapon() {
+  await characterStore.unequip(EquipSlot.Weapon);
 }
 </script>

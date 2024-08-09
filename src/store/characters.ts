@@ -1,5 +1,5 @@
 import charactersApi from '@/api/characters/characters.api';
-import { Character } from '@/api/characters/characters.models';
+import { Character, EquipSlot } from '@/api/characters/characters.models';
 import { defineStore } from 'pinia';
 
 export const useCharacters = defineStore('characters', {
@@ -34,6 +34,12 @@ export const useCharacters = defineStore('characters', {
         await charactersApi.gather(this.selectedCharacter.name)
       ).data;
       this.selectedCharacter = gatheringResult.character;
+    },
+    async unequip(slot: EquipSlot) {
+      var unequipResult = (
+        await charactersApi.unequip(this.selectedCharacter.name, slot)
+      ).data;
+      this.selectedCharacter = unequipResult.character;
     },
   },
 });

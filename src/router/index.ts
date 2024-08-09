@@ -1,5 +1,6 @@
 // Composables
 import browserStorageService from '@/services/browser-storage.service';
+import { useEncyclopedia } from '@/store/encyclopedia';
 import AuthView from '@/views/Auth.vue';
 import CharacterControlView from '@/views/CharacterControl.vue';
 import HomeView from '@/views/Home.vue';
@@ -43,7 +44,7 @@ router.beforeEach(async (to, from) => {
       // bye
       await router.push({ path: '/auth', replace: true });
     } else {
-      // ensure various stores are loaded
+      await useEncyclopedia().loadAllGameData();
     }
   }
 });

@@ -13,6 +13,23 @@ export interface InventorySlot {
   quantity: number;
 }
 
+export enum EquipSlot {
+  Weapon = 'weapon',
+  Shield = 'shield',
+  Helmet = 'helmet',
+  BodyArmor = 'body_armor',
+  LegArmor = 'leg_armor',
+  Boots = 'boots',
+  Ring1 = 'ring1',
+  Ring2 = 'ring2',
+  Amulet = 'amulet',
+  Artifact1 = 'artifact1',
+  Artifact2 = 'artifact2',
+  Artifact3 = 'artifact3',
+  Consumable1 = 'consumable1',
+  Consumable2 = 'consumable2',
+}
+
 export interface Character {
   name: string;
   skin: CharacterSkin;
@@ -125,5 +142,12 @@ export interface FightResponse {
 export interface GatheringResponse {
   cooldown: any; // todo type
   details: any; // todo type
+  character: Character;
+}
+
+export interface UnequipResponse {
+  cooldown: any;
+  slot: EquipSlot;
+  item: any;
   character: Character;
 }

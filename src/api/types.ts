@@ -5,10 +5,11 @@ export type ResponseData<T> = { data: T };
 export type Paging = {
   total: number;
   page: number;
-  limit: number;
+  size: number;
+  pages: number;
 };
 
-export type PagedResponseData<T> = { data: T[]; meta: Paging };
+export type PagedResponseData<T> = { data: T[] } & Paging;
 
 export type DateString =
   `${number}-${number}-${number}T${number}:${number}:${number}Z`;
@@ -17,14 +18,14 @@ export async function iteratePagedData<T>(
   apiFunc: (limit: number, page: number) => Promise<PagedResponseData<T>>,
 ): Promise<T[]> {
   const allData: T[] = [];
-  const limit = 20;
+  const limit = 100;
   let currentPage = 0;
   let total = -1;
   while (total === -1 || currentPage * limit < total) {
     currentPage++;
     const apiResponse = await apiFunc(limit, currentPage);
     allData.push(...apiResponse.data);
-    total = apiResponse.meta.total;
+    total = apiResponse.total;
   }
   return allData;
 }
