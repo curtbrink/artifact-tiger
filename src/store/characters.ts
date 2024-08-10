@@ -142,36 +142,11 @@ export const useCharacterLoops = defineStore('characterLoops', {
       );
 
       // 4. now we traverse a basic tree of actions based on the data acquired
-      if (
-        (meAtBank && hasEmptyInventory) ||
-        (!meAtResource && hasInventorySpace)
-      ) {
-        // move to resource space
-        console.log('moving to resource tile');
-        const result = (
-          await charactersApi.moveCharacter(name, {
-            x: resourceTile.x,
-            y: resourceTile.y,
-          })
-        ).data;
-        encyclopedia.replaceCharacter(result.character);
-        const cooldownSeconds = result.cooldown.remaining_seconds;
-        setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
-        return;
-      } else if (!hasInventorySpace) {
-        // move to bank
-        console.log('moving to bank');
-        const result = (
-          await charactersApi.moveCharacter(name, {
-            x: bankTile.x,
-            y: bankTile.y,
-          })
-        ).data;
-        encyclopedia.replaceCharacter(result.character);
-        const cooldownSeconds = result.cooldown.remaining_seconds;
-        setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
-        return;
-      } else if (meAtBank && !hasEmptyInventory) {
+      const canMoveToResource = !meAtResource && hasInventorySpace;
+      const mustMoveToBank = !meAtBank && !hasInventorySpace;
+      const canMine = meAtResource && hasInventorySpace;
+      const shouldDeposit = meAtBank && !hasEmptyInventory;
+      if (shouldDeposit) {
         // deposit some more stuff
         console.log('emptying inventory');
         const invSlot = me.inventory.find(
@@ -187,11 +162,40 @@ export const useCharacterLoops = defineStore('characterLoops', {
         const cooldownSeconds = result.cooldown.remaining_seconds;
         setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
         return;
-      } else if (meAtResource && hasInventorySpace) {
+      }
+      if (mustMoveToBank) {
+        // move to bank
+        console.log('moving to bank');
+        const result = (
+          await charactersApi.moveCharacter(name, {
+            x: bankTile.x,
+            y: bankTile.y,
+          })
+        ).data;
+        encyclopedia.replaceCharacter(result.character);
+        const cooldownSeconds = result.cooldown.remaining_seconds;
+        setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
+        return;
+      }
+      if (canMine) {
         // mine
         console.log('mining!');
         const result = (await charactersApi.gather(name)).data;
         console.log(`I earned ${result.details.xp} xp!`);
+        encyclopedia.replaceCharacter(result.character);
+        const cooldownSeconds = result.cooldown.remaining_seconds;
+        setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
+        return;
+      }
+      if (canMoveToResource) {
+        // move to resource space
+        console.log('moving to resource tile');
+        const result = (
+          await charactersApi.moveCharacter(name, {
+            x: resourceTile.x,
+            y: resourceTile.y,
+          })
+        ).data;
         encyclopedia.replaceCharacter(result.character);
         const cooldownSeconds = result.cooldown.remaining_seconds;
         setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
