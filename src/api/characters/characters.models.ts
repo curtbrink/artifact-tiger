@@ -1,3 +1,5 @@
+import { Item } from '../items/items.models';
+
 export enum CharacterSkin {
   Man1 = 'men1',
   Man2 = 'men2',
@@ -149,5 +151,17 @@ export interface UnequipResponse {
   cooldown: any;
   slot: EquipSlot;
   item: any;
+  character: Character;
+}
+
+export interface DepositBankRequest {
+  quantity: number;
+  code: string;
+}
+
+export interface DepositBankResponse {
+  cooldown: any;
+  item: Item;
+  bank: any;
   character: Character;
 }

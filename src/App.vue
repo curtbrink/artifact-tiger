@@ -18,10 +18,10 @@ import AppBar from '@/components/shared/AppBar.vue';
 import NavDrawer from '@/components/shared/NavDrawer.vue';
 import TradeTigerSnackbar from '@/components/shared/TradeTigerSnackbar.vue';
 import { onBeforeMount } from 'vue';
+import { useCharacterLoops } from './store/characters';
+import { useEncyclopedia } from './store/encyclopedia';
 import { useLoadingSpinner } from './store/loading-spinner';
 import { useSnackbar } from './store/snackbar';
-import { useCharacters } from './store/characters';
-import { useEncyclopedia } from './store/encyclopedia';
 
 onBeforeMount(() => {
   document.title = 'Artifact Tiger';
@@ -46,7 +46,7 @@ onBeforeMount(() => {
     });
   };
 
-  const listOfStores = [useEncyclopedia(), useCharacters()];
+  const listOfStores = [useEncyclopedia(), useCharacterLoops()];
 
   for (const store of listOfStores) {
     store.$onAction(storeLoadingHook);

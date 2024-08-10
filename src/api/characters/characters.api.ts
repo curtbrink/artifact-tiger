@@ -2,6 +2,8 @@ import artifactsApi from '../artifacts.api';
 import { ResponseData } from '../types';
 import {
   Character,
+  DepositBankRequest,
+  DepositBankResponse,
   EquipSlot,
   FightResponse,
   GatheringResponse,
@@ -16,6 +18,7 @@ const charactersApi = {
   fight: (name: string) => `my/${name}/action/fight`,
   gather: (name: string) => `my/${name}/action/gathering`,
   unequip: (name: string) => `my/${name}/action/unequip`,
+  depositBank: (name: string) => `my/${name}/action/bank/deposit`,
 };
 
 export default {
@@ -48,6 +51,14 @@ export default {
   ): Promise<ResponseData<UnequipResponse>> {
     return artifactsApi.action
       .post(charactersApi.unequip(name), { slot })
+      .then((res) => res.data);
+  },
+  depositBank(
+    name: string,
+    data: DepositBankRequest,
+  ): Promise<ResponseData<DepositBankResponse>> {
+    return artifactsApi.action
+      .post(charactersApi.depositBank(name), data)
       .then((res) => res.data);
   },
 };
