@@ -33,7 +33,9 @@ export const useCharacterLoops = defineStore('characterLoops', {
 
       // 2. shuttle the character to the right method
       const characterLoopLibrary: CharacterLoopLibrary = {
-        powerlevel_mining: this.doPowerlevelMining,
+        'Powerlevel Mining': this.doPowerlevelMining,
+        'Powerlevel Fishing': this.doPowerlevelFishing,
+        'Powerlevel Woodcutting': this.doPowerlevelWoodcutting,
       };
       console.log('about to do the entry method thing.');
       return characterLoopLibrary[action](name);
@@ -45,7 +47,20 @@ export const useCharacterLoops = defineStore('characterLoops', {
     },
 
     async doPowerlevelMining(name: string) {
-      console.log(`doing doPowerlevelMining for ${name}`);
+      // pass thru for gather loop
+      await this.generalGatherLoop(name, CraftingSkill.Mining);
+    },
+    async doPowerlevelFishing(name: string) {
+      // pass thru for gather loop
+      await this.generalGatherLoop(name, CraftingSkill.Fishing);
+    },
+    async doPowerlevelWoodcutting(name: string) {
+      // pass thru for gather loop
+      await this.generalGatherLoop(name, CraftingSkill.Woodcutting);
+    },
+
+    async generalGatherLoop(name: string, skill: CraftingSkill) {
+      console.log(`doing gathering loop for ${name} => ${skill}`);
       // anatomy of a loop:
       // 1. verify this character should be actioning by looking them up on The List.
       //    if they aren't on there, just stop doing whatever it is you think you're doing
@@ -65,6 +80,20 @@ export const useCharacterLoops = defineStore('characterLoops', {
         return;
       }
 
+      // 1a. also check to make sure this skill actually involves gathering
+      if (
+        ![
+          CraftingSkill.Mining,
+          CraftingSkill.Fishing,
+          CraftingSkill.Woodcutting,
+        ].includes(skill)
+      ) {
+        // get outta here
+        console.log(`invalid skill for gathering loop: ${skill}`);
+        this.removeCharacterFromLoop(name);
+        return;
+      }
+
       const encyclopedia = useEncyclopedia();
 
       // 2. I sometimes wonder / where do we go from here? / it doesn't have to be like this / all we need to do is keep talking...
@@ -77,17 +106,15 @@ export const useCharacterLoops = defineStore('characterLoops', {
       }
 
       // 3. data acquisition phase
-      // determines what we can mine
-      const miningLevel = me.mining_level;
-      console.log(`mining level is ${miningLevel}`);
+      // determines what we can gather
+      const charLevel = me[`${skill}_level`];
+      console.log(`skill level is ${charLevel}`);
       // list of all mining resources and their levels
-      const miningHierarchy = encyclopedia.getResourcesBySkill(
-        CraftingSkill.Mining,
-      );
+      const resourceHierarchy = encyclopedia.getResourcesBySkill(skill);
       // what's the highest level resource I can mine with my current level?
-      const targetResource = miningHierarchy.reduce(
+      const targetResource = resourceHierarchy.reduce(
         (currentTarget: Resource, resourceToCheck: Resource) => {
-          return resourceToCheck.level <= miningLevel &&
+          return resourceToCheck.level <= charLevel &&
             resourceToCheck.level > currentTarget.level
             ? resourceToCheck
             : currentTarget;
@@ -95,7 +122,7 @@ export const useCharacterLoops = defineStore('characterLoops', {
         { level: 0 } as Resource,
       );
       if (!targetResource.name) {
-        // I'm literally a fetus who doesn't know what mining is
+        // I'm literally a fetus who doesn't know what skilling is
         console.log('couldnt determine target resource, removing and breaking');
         this.removeCharacterFromLoop(name);
         return;
@@ -120,9 +147,9 @@ export const useCharacterLoops = defineStore('characterLoops', {
       const meAtResource = me.x === resourceTile.x && me.y === resourceTile.y;
 
       // what's in my backpack and can it hold more things
-      const resourceCode = targetResource.drops.find(
-        (d: DropRate) => d.rate === 1,
-      )!.code;
+      const resourceCode =
+        targetResource.drops.find((d: DropRate) => d.rate === 1)?.code ??
+        targetResource.drops[0].code;
       const hasEmptySlot = me.inventory.some(
         (slot: InventorySlot) => slot.quantity === 0 && slot.code === '',
       );
@@ -144,7 +171,7 @@ export const useCharacterLoops = defineStore('characterLoops', {
       // 4. now we traverse a basic tree of actions based on the data acquired
       const canMoveToResource = !meAtResource && hasInventorySpace;
       const mustMoveToBank = !meAtBank && !hasInventorySpace;
-      const canMine = meAtResource && hasInventorySpace;
+      const canGather = meAtResource && hasInventorySpace;
       const shouldDeposit = meAtBank && !hasEmptyInventory;
       if (shouldDeposit) {
         // deposit some more stuff
@@ -160,7 +187,10 @@ export const useCharacterLoops = defineStore('characterLoops', {
         ).data;
         encyclopedia.replaceCharacter(result.character);
         const cooldownSeconds = result.cooldown.remaining_seconds;
-        setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
+        setTimeout(
+          () => this.generalGatherLoop(name, skill),
+          cooldownSeconds * 1000,
+        );
         return;
       }
       if (mustMoveToBank) {
@@ -174,17 +204,23 @@ export const useCharacterLoops = defineStore('characterLoops', {
         ).data;
         encyclopedia.replaceCharacter(result.character);
         const cooldownSeconds = result.cooldown.remaining_seconds;
-        setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
+        setTimeout(
+          () => this.generalGatherLoop(name, skill),
+          cooldownSeconds * 1000,
+        );
         return;
       }
-      if (canMine) {
-        // mine
-        console.log('mining!');
+      if (canGather) {
+        // grab all the things
+        console.log('gathering!');
         const result = (await charactersApi.gather(name)).data;
         console.log(`I earned ${result.details.xp} xp!`);
         encyclopedia.replaceCharacter(result.character);
         const cooldownSeconds = result.cooldown.remaining_seconds;
-        setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
+        setTimeout(
+          () => this.generalGatherLoop(name, skill),
+          cooldownSeconds * 1000,
+        );
         return;
       }
       if (canMoveToResource) {
@@ -198,7 +234,10 @@ export const useCharacterLoops = defineStore('characterLoops', {
         ).data;
         encyclopedia.replaceCharacter(result.character);
         const cooldownSeconds = result.cooldown.remaining_seconds;
-        setTimeout(() => this.doPowerlevelMining(name), cooldownSeconds * 1000);
+        setTimeout(
+          () => this.generalGatherLoop(name, skill),
+          cooldownSeconds * 1000,
+        );
         return;
       }
       // fallback?

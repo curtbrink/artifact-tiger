@@ -5,6 +5,7 @@ export enum CraftingSkill {
   Cooking = 'cooking',
   Mining = 'mining',
   Woodcutting = 'woodcutting',
+  Fishing = 'fishing',
 }
 
 export interface ItemEffect {

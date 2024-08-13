@@ -38,7 +38,33 @@
                 <v-btn
                   block
                   variant="outlined"
-                  @click="cancelMiningLoop(character.name)"
+                  @click="setFishingLoop(character.name)"
+                  :disabled="
+                    !!characterLoopController.getCharacterLoop(character.name)
+                  "
+                  >Do Fishing!</v-btn
+                >
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  block
+                  variant="outlined"
+                  @click="setWoodcuttingLoop(character.name)"
+                  :disabled="
+                    !!characterLoopController.getCharacterLoop(character.name)
+                  "
+                  >Do Woodcutting!</v-btn
+                >
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  block
+                  variant="outlined"
+                  @click="cancelLoop(character.name)"
                   :disabled="
                     !characterLoopController.getCharacterLoop(character.name)
                   "
@@ -64,9 +90,21 @@ const characterLoopController = useCharacterLoops();
 const characterList = computed(() => encyclopedia.myCharacters);
 
 async function setMiningLoop(name: string) {
-  await characterLoopController.placeCharacterOnLoop(name, 'powerlevel_mining');
+  await characterLoopController.placeCharacterOnLoop(name, 'Powerlevel Mining');
 }
-async function cancelMiningLoop(name: string) {
+async function setFishingLoop(name: string) {
+  await characterLoopController.placeCharacterOnLoop(
+    name,
+    'Powerlevel Fishing',
+  );
+}
+async function setWoodcuttingLoop(name: string) {
+  await characterLoopController.placeCharacterOnLoop(
+    name,
+    'Powerlevel Woodcutting',
+  );
+}
+async function cancelLoop(name: string) {
   await characterLoopController.removeCharacterFromLoop(name);
 }
 </script>
