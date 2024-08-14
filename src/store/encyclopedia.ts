@@ -54,5 +54,16 @@ export const useEncyclopedia = defineStore('encyclopedia', {
       state.maps.find((m: Map) => m.content?.code === resourceName),
     getMapTileByContentType: (state) => (contentType: string) =>
       state.maps.find((m: Map) => m.content?.type === contentType),
+    getPrimaryResourceDrop: (state) => (resourceCode: string) => {
+      const resource = state.resources.find((r) => r.code === resourceCode);
+      if (!resource) {
+        return null;
+      }
+      return resource.drops.reduce((mainDrop, resourceToCheck) => {
+        return resourceToCheck.rate < mainDrop?.rate ?? Infinity
+          ? resourceToCheck
+          : mainDrop;
+      });
+    },
   },
 });

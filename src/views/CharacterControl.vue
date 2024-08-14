@@ -11,12 +11,10 @@
       <v-card>
         <v-card-title>Loops</v-card-title>
         <v-card-text>
-          <span
-            v-if="!!characterLoopController.getCharacterLoop(character.name)"
-            >On loop:
-            {{ characterLoopController.getCharacterLoop(character.name) }}</span
+          <span v-if="orchestrator.characterIsBeingOrchestrated(character.name)"
+            >Currently being orchestrated!</span
           >
-          <span v-else>Not on a loop!</span>
+          <span v-else>Not being orchestrated!</span>
         </v-card-text>
         <v-card-actions>
           <v-container>
@@ -25,9 +23,9 @@
                 <v-btn
                   block
                   variant="outlined"
-                  @click="setMiningLoop(character.name)"
+                  @click="setOnMiningOrchestration(character.name)"
                   :disabled="
-                    !!characterLoopController.getCharacterLoop(character.name)
+                    orchestrator.characterIsBeingOrchestrated(character.name)
                   "
                   >Do Mining!</v-btn
                 >
@@ -38,9 +36,9 @@
                 <v-btn
                   block
                   variant="outlined"
-                  @click="setFishingLoop(character.name)"
+                  @click="setOnFishingOrchestration(character.name)"
                   :disabled="
-                    !!characterLoopController.getCharacterLoop(character.name)
+                    orchestrator.characterIsBeingOrchestrated(character.name)
                   "
                   >Do Fishing!</v-btn
                 >
@@ -51,9 +49,9 @@
                 <v-btn
                   block
                   variant="outlined"
-                  @click="setWoodcuttingLoop(character.name)"
+                  @click="setOnWoodcuttingOrchestration(character.name)"
                   :disabled="
-                    !!characterLoopController.getCharacterLoop(character.name)
+                    orchestrator.characterIsBeingOrchestrated(character.name)
                   "
                   >Do Woodcutting!</v-btn
                 >
@@ -64,11 +62,13 @@
                 <v-btn
                   block
                   variant="outlined"
-                  @click="cancelLoop(character.name)"
-                  :disabled="
-                    !characterLoopController.getCharacterLoop(character.name)
+                  @click="
+                    orchestrator.removeCharacterOrchestration(character.name)
                   "
-                  >Cancel Mining!</v-btn
+                  :disabled="
+                    !orchestrator.characterIsBeingOrchestrated(character.name)
+                  "
+                  >Cancel Orchestration!</v-btn
                 >
               </v-col>
             </v-row>
@@ -80,31 +80,36 @@
 </template>
 
 <script lang="ts" setup>
-import { useCharacterLoops } from '@/store/characters';
+import { useActions } from '@/store/actions';
 import { useEncyclopedia } from '@/store/encyclopedia';
+import { useOrchestrator } from '@/store/orchestrator';
 import { computed } from 'vue';
 
 const encyclopedia = useEncyclopedia();
-const characterLoopController = useCharacterLoops();
+const orchestrator = useOrchestrator();
+const actionLibrary = useActions();
 
 const characterList = computed(() => encyclopedia.myCharacters);
 
-async function setMiningLoop(name: string) {
-  await characterLoopController.placeCharacterOnLoop(name, 'Powerlevel Mining');
-}
-async function setFishingLoop(name: string) {
-  await characterLoopController.placeCharacterOnLoop(
+async function setOnMiningOrchestration(name: string) {
+  await orchestrator.addCharacterOrchestration(
     name,
-    'Powerlevel Fishing',
+    [actionLibrary.powerlevelMining, actionLibrary.emptyInventory],
+    { shouldLoop: true },
   );
 }
-async function setWoodcuttingLoop(name: string) {
-  await characterLoopController.placeCharacterOnLoop(
+async function setOnFishingOrchestration(name: string) {
+  await orchestrator.addCharacterOrchestration(
     name,
-    'Powerlevel Woodcutting',
+    [actionLibrary.powerlevelFishing, actionLibrary.emptyInventory],
+    { shouldLoop: true },
   );
 }
-async function cancelLoop(name: string) {
-  await characterLoopController.removeCharacterFromLoop(name);
+async function setOnWoodcuttingOrchestration(name: string) {
+  await orchestrator.addCharacterOrchestration(
+    name,
+    [actionLibrary.powerlevelWoodcutting, actionLibrary.emptyInventory],
+    { shouldLoop: true },
+  );
 }
 </script>
