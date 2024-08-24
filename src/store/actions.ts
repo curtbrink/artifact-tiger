@@ -9,6 +9,13 @@ import { Resource } from '@/api/resources/resources.models';
 export const useActions = defineStore('actions', {
   state: () => ({}),
   actions: {
+    // where to go from here:
+    //   - action for crafting a specific item of a specific quantity
+    //   - action for fighting a specific monster
+    //   - action for retrieving and equipping equipment out of the bank
+    //   - etc
+    // then we can start composing standard lists of these actions
+    // i.e. "craft complex item" -> break down into gathering actions and crafting actions
     async powerlevelMining(me: Character, data: any): Promise<ActionCode> {
       return this.powerlevelGathering(me, {
         ...data,

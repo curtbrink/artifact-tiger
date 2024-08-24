@@ -25,7 +25,7 @@ const routes = [
     },
   },
   {
-    path: '/control',
+    path: '/control/:charName',
     component: CharacterControlView,
     meta: {
       requiresAuth: true,
