@@ -80,11 +80,12 @@
 </template>
 
 <script lang="ts" setup>
+import { Character } from '@/api/characters/characters.models';
 import { useActions } from '@/store/actions';
 import { useEncyclopedia } from '@/store/encyclopedia';
 import { useOrchestrator } from '@/store/orchestrator';
 import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 const encyclopedia = useEncyclopedia();
 const orchestrator = useOrchestrator();
@@ -92,8 +93,10 @@ const actionLibrary = useActions();
 
 const currentRoute = useRoute();
 
-const character = computed(() =>
-  encyclopedia.getCharacterByName(currentRoute.params.charName as string),
+const character = computed(
+  () =>
+    encyclopedia.getCharacterByName(currentRoute.params.charName as string) ??
+    ({} as Character),
 );
 
 async function setOnMiningOrchestration(name: string) {
