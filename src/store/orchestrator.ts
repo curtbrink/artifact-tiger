@@ -25,6 +25,7 @@ export type ActionPath = {
   metadata: any;
   actions: Action[];
   currentAction: number;
+  pathName: string;
 };
 
 export const useOrchestrator = defineStore('orchestrator', {
@@ -34,6 +35,7 @@ export const useOrchestrator = defineStore('orchestrator', {
   actions: {
     async addCharacterOrchestration(
       characterName: string,
+      pathName: string,
       actionList: Action[],
       params: any,
     ) {
@@ -41,6 +43,7 @@ export const useOrchestrator = defineStore('orchestrator', {
         metadata: params,
         actions: actionList,
         currentAction: 0,
+        pathName,
       };
       this.controlledCharacters[characterName] = orchestrationData;
       await this.orchestrate(characterName);
@@ -118,7 +121,7 @@ export const useOrchestrator = defineStore('orchestrator', {
     },
   },
   getters: {
-    characterIsBeingOrchestrated: (state) => (name: string) =>
-      state.controlledCharacters[name] !== undefined,
+    characterOrchestrationName: (state) => (name: string) =>
+      state.controlledCharacters[name]?.pathName ?? 'N/A',
   },
 });

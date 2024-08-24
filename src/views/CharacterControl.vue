@@ -11,10 +11,8 @@
       <v-card>
         <v-card-title>Loops</v-card-title>
         <v-card-text>
-          <span v-if="orchestrator.characterIsBeingOrchestrated(character.name)"
-            >Currently being orchestrated!</span
-          >
-          <span v-else>Not being orchestrated!</span>
+          Currently:
+          {{ orchestrator.characterOrchestrationName(character.name) }}
         </v-card-text>
         <v-card-actions>
           <v-container>
@@ -24,9 +22,7 @@
                   block
                   variant="outlined"
                   @click="setOnMiningOrchestration(character.name)"
-                  :disabled="
-                    orchestrator.characterIsBeingOrchestrated(character.name)
-                  "
+                  :disabled="isOnOrchestration"
                   >Do Mining!</v-btn
                 >
               </v-col>
@@ -37,9 +33,7 @@
                   block
                   variant="outlined"
                   @click="setOnFishingOrchestration(character.name)"
-                  :disabled="
-                    orchestrator.characterIsBeingOrchestrated(character.name)
-                  "
+                  :disabled="isOnOrchestration"
                   >Do Fishing!</v-btn
                 >
               </v-col>
@@ -50,9 +44,7 @@
                   block
                   variant="outlined"
                   @click="setOnWoodcuttingOrchestration(character.name)"
-                  :disabled="
-                    orchestrator.characterIsBeingOrchestrated(character.name)
-                  "
+                  :disabled="isOnOrchestration"
                   >Do Woodcutting!</v-btn
                 >
               </v-col>
@@ -65,9 +57,7 @@
                   @click="
                     orchestrator.removeCharacterOrchestration(character.name)
                   "
-                  :disabled="
-                    !orchestrator.characterIsBeingOrchestrated(character.name)
-                  "
+                  :disabled="!isOnOrchestration"
                   >Cancel Orchestration!</v-btn
                 >
               </v-col>
@@ -99,9 +89,15 @@ const character = computed(
     ({} as Character),
 );
 
+const currentOrchestration = computed(() =>
+  orchestrator.characterOrchestrationName(character.value.name),
+);
+const isOnOrchestration = computed(() => currentOrchestration.value !== 'N/A');
+
 async function setOnMiningOrchestration(name: string) {
   await orchestrator.addCharacterOrchestration(
     name,
+    'Powerleveling Mining',
     [actionLibrary.powerlevelMining, actionLibrary.emptyInventory],
     { shouldLoop: true },
   );
@@ -109,6 +105,7 @@ async function setOnMiningOrchestration(name: string) {
 async function setOnFishingOrchestration(name: string) {
   await orchestrator.addCharacterOrchestration(
     name,
+    'Powerleveling Fishing',
     [actionLibrary.powerlevelFishing, actionLibrary.emptyInventory],
     { shouldLoop: true },
   );
@@ -116,6 +113,7 @@ async function setOnFishingOrchestration(name: string) {
 async function setOnWoodcuttingOrchestration(name: string) {
   await orchestrator.addCharacterOrchestration(
     name,
+    'Powerleveling Woodcutting',
     [actionLibrary.powerlevelWoodcutting, actionLibrary.emptyInventory],
     { shouldLoop: true },
   );
