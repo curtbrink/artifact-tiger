@@ -1,7 +1,7 @@
 import charactersApi from '@/api/characters/characters.api';
 import { Character } from '@/api/characters/characters.models';
 import itemsApi from '@/api/items/items.api';
-import { CraftingSkill, Item } from '@/api/items/items.models';
+import { BankItem, CraftingSkill, Item } from '@/api/items/items.models';
 import mapsApi from '@/api/maps/maps.api';
 import { Map } from '@/api/maps/maps.models';
 import monstersApi from '@/api/monsters/monsters.api';
@@ -19,6 +19,7 @@ export const useEncyclopedia = defineStore('encyclopedia', {
     resources: [] as Resource[],
     monsters: [] as Monster[],
     myCharacters: [] as Character[],
+    myBank: [] as BankItem[],
   }),
   actions: {
     async loadAllGameData() {
@@ -30,6 +31,7 @@ export const useEncyclopedia = defineStore('encyclopedia', {
       this.resources = await iteratePagedData(resourcesApi.getAllResources);
       this.monsters = await iteratePagedData(monstersApi.getAllMonsters);
       this.myCharacters = (await charactersApi.getMyCharacters()).data;
+      this.myBank = await iteratePagedData(itemsApi.getMyBank);
       this.isLoaded = true;
     },
     replaceCharacter(newCharacter: Character) {
@@ -40,6 +42,9 @@ export const useEncyclopedia = defineStore('encyclopedia', {
       if (charIndex > -1) {
         this.myCharacters.splice(charIndex, 1, newCharacter);
       }
+    },
+    replaceBank(newBank: BankItem[]) {
+      this.myBank = newBank;
     },
   },
   getters: {
@@ -65,5 +70,7 @@ export const useEncyclopedia = defineStore('encyclopedia', {
           : mainDrop;
       });
     },
+    getItemByCode: (state) => (itemCode: string) =>
+      state.items.find((item) => item.code === itemCode),
   },
 });

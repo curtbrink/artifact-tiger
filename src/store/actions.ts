@@ -192,6 +192,7 @@ export const useActions = defineStore('actions', {
           quantity: firstItemSlot.quantity,
           code: firstItemSlot.code,
         });
+        encyclopedia.replaceBank(bankResult.data.bank);
         characterResult = bankResult.data.character;
         cooldownResult = bankResult.data.cooldown.remaining_seconds;
       } else {

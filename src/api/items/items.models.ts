@@ -36,6 +36,11 @@ export interface Item {
   craft: ItemCraft;
 }
 
+export interface BankItem {
+  code: string;
+  quantity: number;
+}
+
 export enum ItemType {
   Consumable = 'consumable',
   BodyArmor = 'body_armor',

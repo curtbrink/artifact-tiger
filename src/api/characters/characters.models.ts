@@ -1,4 +1,4 @@
-import { Item } from '../items/items.models';
+import { BankItem, Item } from '../items/items.models';
 
 export enum CharacterSkin {
   Man1 = 'men1',
@@ -162,6 +162,6 @@ export interface DepositBankRequest {
 export interface DepositBankResponse {
   cooldown: any;
   item: Item;
-  bank: any;
+  bank: BankItem[];
   character: Character;
 }
